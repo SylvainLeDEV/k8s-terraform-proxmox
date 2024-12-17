@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: home-assistant
+  namespace: home-assistant    
+spec:
+  project: default
+  source:
+    repoURL: http://pajikos.github.io/home-assistant-helm-chart/ 
+    chart: home-assistant
+    targetRevision: '*'
+    helm:
+      values: |
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: "traefik"
+            traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+            traefik.ingress.kubernetes.io/router.tls: "true"
+          hosts:
+            - host: home-assistant.k.zethak.org 
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: home-assistant
+  syncPolicy:
+    automated:
+      prune: true           # Supprime les ressources obsolètes
+      selfHeal: true        # Corrige les dérives de l'état
+    syncOptions:
+      - CreateNamespace=true
