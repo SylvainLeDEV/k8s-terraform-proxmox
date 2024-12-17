@@ -13,6 +13,7 @@ spec:
       valuesObject:
         ingress:
           enabled: true
+          className: "traefik"
           annotations:
             kubernetes.io/ingress.class: "traefik"
             traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
