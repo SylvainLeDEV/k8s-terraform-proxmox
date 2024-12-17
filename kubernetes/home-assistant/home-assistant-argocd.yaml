@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/pajikos/home-assistant-helm-chart.git 
-    path: chart/home-assistant
+    path: charts/home-assistant
     targetRevision: HEAD
     # helm:
     #   valuesObject:
