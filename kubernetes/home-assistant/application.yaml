@@ -6,23 +6,23 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/pajikos/home-assistant-helm-chart.git 
-    path: charts/home-assistant
-    targetRevision: HEAD
-    helm:
-      valuesObject:
-        ingress:
-          enabled: true
-          className: "traefik"
-          annotations:
-            kubernetes.io/ingress.class: "traefik"
-            traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
-            traefik.ingress.kubernetes.io/router.tls: "true"
-          hosts:
-            - host: home-assistant.k.zethak.org
-              paths:
-                - path: /
-                  pathType: ImplementationSpecific
+    repoURL: http://pajikos.github.io/home-assistant-helm-chart/ 
+    chart: home-assistant
+    targetRevision: '0.2.94'
+    # helm:
+    #   valuesObject:
+    #     ingress:
+    #       enabled: true
+    #       className: "traefik"
+    #       annotations:
+    #         kubernetes.io/ingress.class: "traefik"
+    #         traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    #         traefik.ingress.kubernetes.io/router.tls: "true"
+    #       hosts:
+    #         - host: home-assistant.k.zethak.org
+    #           paths:
+    #             - path: /
+    #               pathType: ImplementationSpecific
   destination:
     server: https://kubernetes.default.svc
     namespace: home-assistant
