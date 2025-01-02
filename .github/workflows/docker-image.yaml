@@ -3,22 +3,52 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - main  # Se déclenche uniquement sur la branche main
+      - main
     paths:
-      - "projects/*/**"  # Détecte les changements dans n'importe quel sous-dossier de 'projects'
+      - "projects/**" # Se déclenche uniquement si un fichier change dans `projects/`
 
 jobs:
-  build:
+  # Étape 1 : Détecter les projets modifiés
+  changed_files:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder: ${{ fromJson(needs.changed_files.outputs.changed_folders) }}
-
-    needs: changed_files
-
+    outputs:
+      changed_folders: ${{ steps.filter.outputs.changed_folders }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+
+    - name: Detect changed projects
+      id: filter
+      run: |
+        # Récupère les dossiers de projets modifiés sous `projects/`
+        projects=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+        | grep '^projects/' \
+        | awk -F'/' '{print $2}' \
+        | sort -u)
+
+        # Construit une liste JSON avec les noms de dossiers de projets modifiés
+        json_projects=$(echo $projects | jq -R -s -c 'split("\n")[:-1]')
+        echo "Detected modified projects: $json_projects"
+        echo "::set-output name=changed_folders::$json_projects"
+
+    - name: Debug changed projects
+      run: |
+        echo "Modified projects: ${{ steps.filter.outputs.changed_folders }}"
+
+  # Étape 2 : Construire et pousser les images Docker pour chaque projet modifié
+  build:
+    runs-on: ubuntu-latest
+    needs: changed_files
+    strategy:
+      matrix:
+        folder: ${{ fromJson(needs.changed_files.outputs.changed_folders) }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Debug matrix folder
+      run: |
+        echo "Processing project folder: ${{ matrix.folder }}"
 
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v2
@@ -33,23 +63,7 @@ jobs:
         context: ./projects/${{ matrix.folder }}
         file: ./projects/${{ matrix.folder }}/Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/${{ matrix.folder }}:latest
+        tags: ghcr.io/${{ github.repository_owner }}/projects-${{ matrix.folder }}:latest
 
     - name: Logout from Docker
       run: docker logout ghcr.io
-
-  changed_files:
-    runs-on: ubuntu-latest
-    outputs:
-      changed_folders: ${{ steps.filter.outputs.changed_folders }}
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Detect changed folders
-      id: filter
-      run: |
-        echo "Running folder detection"
-        folders=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^projects/' | cut -d'/' -f2 | sort | uniq)
-        echo "Changed folders: $folders"
-        echo "::set-output name=changed_folders::[$(echo $folders | jq -R -s -c 'split("\n")[:-1]')]"
