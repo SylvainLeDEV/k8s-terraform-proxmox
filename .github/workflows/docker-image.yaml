@@ -73,7 +73,7 @@ jobs:
     - id: lower-repo
       name: Repository to lowercase
       run: |
-        echo "repository=${github.repository_owner}" >> $GITHUB_OUTPUT
+        "::set-output name=repository::$($env:GITHUB_REPOSITORY.ToLowerInvariant())"
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
