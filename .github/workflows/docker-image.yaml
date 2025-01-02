@@ -68,7 +68,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ secrets.CR_TOKEN }}
 
     - id: lower-repo
       name: Repository to lowercase
