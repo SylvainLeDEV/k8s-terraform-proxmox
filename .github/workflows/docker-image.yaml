@@ -81,7 +81,7 @@ jobs:
         context: ./projects/${{ matrix.folder }}
         file: ./projects/${{ matrix.folder }}/Dockerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/projects-${{ matrix.folder }}:latest
+        tags: ghcr.io/${{ steps.lower-repo.outputs.repository }}/projects-${{ matrix.folder }}:latest
 
     - name: Logout from Docker
       run: docker logout ghcr.io
