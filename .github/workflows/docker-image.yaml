@@ -70,6 +70,11 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - id: lower-repo
+      name: Repository to lowercase
+      run: |
+        echo "repository=${github.repository_owner}" >> $GITHUB_OUTPUT
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
       with:
