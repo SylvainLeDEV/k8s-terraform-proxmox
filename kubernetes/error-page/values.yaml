@@ -7,7 +7,7 @@ replicaCount: 1
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: ghcr.io/sylvainledev/projects-error-page
+  repository: ghcr.io/sylvainledev/k8s-terraform-proxmox/projects-error-page
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
@@ -63,14 +63,14 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: traefik
   hosts:
-    - host: git.k.zethak.org
+    - host: error-page.k.zethak.org
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: git-k-zethak-org-tls
       hosts:
-        - git.k.zethak.org
+        - error-page.k.zethak.org
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
