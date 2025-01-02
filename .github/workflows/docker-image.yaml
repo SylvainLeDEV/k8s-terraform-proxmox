@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "projects/**" # Se déclenche uniquement si un fichier change dans `projects/`
+      - "projects/**"
 
 jobs:
   # Étape 1 : Détecter les projets modifiés
@@ -16,18 +16,31 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Clone tout l'historique Git
 
     - name: Detect changed projects
       id: filter
       run: |
-        # Récupère les dossiers de projets modifiés sous `projects/`
-        projects=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+        # Définit la base de comparaison pour git diff
+        if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+          echo "Initial commit detected. Comparing against empty tree."
+          base_ref=$(git hash-object -t tree /dev/null)
+        else
+          base_ref="${{ github.event.before }}"
+        fi
+
+        # Récupère les dossiers modifiés sous `projects/`
+        projects=$(git diff --name-only $base_ref ${{ github.sha }} \
         | grep '^projects/' \
         | awk -F'/' '{print $2}' \
         | sort -u)
 
-        # Construit une liste JSON avec les noms de dossiers de projets modifiés
-        json_projects=$(echo $projects | jq -R -s -c 'split("\n")[:-1]')
+        # Exclut les entrées vides
+        valid_projects=$(echo "$projects" | grep -v '^$')
+
+        # Construit une liste JSON
+        json_projects=$(echo "$valid_projects" | jq -R -s -c 'split("\n")[:-1]')
         echo "Detected modified projects: $json_projects"
         echo "::set-output name=changed_folders::$json_projects"
 
