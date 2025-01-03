@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   error-page:
   - apiVersion: v2
+    appVersion: 0.2.7
+    created: "2025-01-03T14:28:14.548201792Z"
+    description: A Helm chart for deploying a static error page
+    digest: 1955bc2eb6a1f4e4d3e81e0a9c556704e4329c1631d3701605fa19ddbf699b1f
+    name: error-page
+    type: application
+    urls:
+    - https://github.com/SylvainLeDEV/k8s-terraform-proxmox/releases/download/error-page-0.2.7/error-page-0.2.7.tgz
+    version: 0.2.7
+  - apiVersion: v2
     appVersion: 0.2.6
     created: "2025-01-03T14:22:40.073752184Z"
     description: A Helm chart for deploying a static error page
@@ -71,4 +81,4 @@ entries:
     urls:
     - https://github.com/SylvainLeDEV/k8s-terraform-proxmox/releases/download/error-page-0.2.0/error-page-0.2.0.tgz
     version: 0.2.0
-generated: "2025-01-03T14:22:40.073798611Z"
+generated: "2025-01-03T14:28:14.548248269Z"
