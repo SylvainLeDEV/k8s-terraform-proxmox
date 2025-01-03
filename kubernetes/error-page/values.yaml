@@ -63,6 +63,11 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.middlewares: error-page@kubernetescrd  
+  integrations:
+    traefik:
+      fixedMiddlewares:
+        - name: error-page
+          namespace: "default"
   hosts:
     - host: error-page.k.zethak.org
       paths:
