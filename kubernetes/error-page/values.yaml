@@ -62,21 +62,15 @@ ingress:
   className:
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.middlewares: error-page@kubernetescrd  
-  integrations:
-    traefik:
-      fixedMiddlewares:
-        - name: error-page
-          namespace: "default"
-  # hosts:
-  #   - host: error-page.k.zethak.org
-  #     paths:
-  #       - path: /
-  #         pathType: Prefix
-  # tls:
-  #   - secretName: git-k-zethak-org-tls
-  #     hosts:
-  #       - error-page.k.zethak.org
+  hosts:
+    - host: error-page.k.zethak.org
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: git-k-zethak-org-tls
+      hosts:
+        - error-page.k.zethak.org
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
