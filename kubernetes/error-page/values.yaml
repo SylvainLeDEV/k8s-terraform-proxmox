@@ -62,7 +62,6 @@ ingress:
   className:
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.middlewares: error-page@kubernetescrd
   hosts:
     - host: error-page.k.zethak.org
       paths:
